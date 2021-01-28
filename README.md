@@ -102,3 +102,92 @@ Yes
 (base) Katies-MacBook-Air-4:KatieCriderAdvancedGenomicsLog katiecrider$ git push -u origin main
 
 ```
+
+## Day 03 Exercises/Day 2 HW: 1/27/21
+``` sh
+#exercises day03 / Day02HW:
+
+#1 Write an sbatch script to cp the files /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/originalfastqs/ into your own data directory
+
+(base) Katies-MacBook-Air-4:21sp_advgenomics katiecrider$ nano KCridCopyLane04.sh
+(base) Katies-MacBook-Air-4:21sp_advgenomics katiecrider$ scp KCridCopyLane04.sh kcrid001@turing.hpc.odu.edu:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/KCridCopyLane04.sh
+kcrid001@turing.hpc.odu.edu's password: 
+KCridCopyLane04.sh                                              100%  325    10.6KB/s   00:00    
+
+[kcrid001@coreV2-25-072 data]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+[kcrid001@coreV2-25-072 data]$ ls
+exercises  KCridCopyLane04.sh
+
+#2 Add the content of your sbatch script to your logfile
+
+[kcrid001@coreV2-25-072 data]$ cat KCridCopyLane04.sh 
+#!/bin/bash -l
+
+#SBATCH -o KCridCopyLane04.txt
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridCopyLane04
+
+
+cp /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/originalfastqs/HADB04-* /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+
+
+#3 submit the slurm script (sbatch scripname.sh) and verify that it's working (by squeue -u yourusername multiple times and checking the destination directory to make sure the files are being created)
+
+[kcrid001@coreV2-25-072 data]$ sbatch KCridCopyLane04.sh 
+Submitted batch job 9270446
+[kcrid001@coreV2-25-072 data]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9270424      main       sh kcrid001  R      46:39      1 coreV2-25-072 
+           9270446      main KCridCop kcrid001  R      10:45      1 coreV2-25-072 
+#4 Make sure this is all documented on your github notebook
+  #Done
+
+#5 Write a sbatch script to gunzip all the fastq.gz files
+
+[kcrid001@coreV2-25-072 data]$ nano KCridGunzipLane04.sh
+[kcrid001@coreV2-25-072 data]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+[kcrid001@coreV2-25-072 data]$ cat KCridGunzipLane04.sh
+#!/bin/bash -l
+
+#SBATCH -o KCridGunzipLane04.txt
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridGunzipLane04
+
+gunzip *.fastq.gz
+
+[kcrid001@coreV2-25-072 data]$ sbatch KCridGunzipLane04.sh 
+Submitted batch job 9270468
+[kcrid001@coreV2-25-072 data]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9270424      main       sh kcrid001  R      57:21      1 coreV2-25-072 
+           9270468      main KCridGun kcrid001  R       0:34      1 coreV2-25-072 
+[kcrid001@coreV2-25-072 data]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+[kcrid001@coreV2-25-072 data]$ ls
+exercises                          HADB04-J_S74_L005_R1_001.fastq.gz
+HADB04-A_S65_L005_R1_001.fastq     HADB04-K_S75_L005_R1_001.fastq.gz
+HADB04-A_S65_L005_R1_001.fastq.gz  HADB04-L_S76_L005_R1_001.fastq.gz
+HADB04-B_S66_L005_R1_001.fastq.gz  HADB04-M_S77_L005_R1_001.fastq.gz
+HADB04-C_S67_L005_R1_001.fastq.gz  HADB04-N_S78_L005_R1_001.fastq.gz
+HADB04-D_S68_L005_R1_001.fastq.gz  HADB04-O_S79_L005_R1_001.fastq.gz
+HADB04-E_S69_L005_R1_001.fastq.gz  HADB04-P_S80_L005_R1_001.fastq.gz
+HADB04-F_S70_L005_R1_001.fastq.gz  KCridCopyLane04.sh
+HADB04-G_S71_L005_R1_001.fastq.gz  KCridCopyLane04.txt
+HADB04-H_S72_L005_R1_001.fastq.gz  KCridGunzipLane04.sh
+HADB04-I_S73_L005_R1_001.fastq.gz  KCridGunzipLane04.txt
+[kcrid001@coreV2-25-072 data]$ ls
+exercises                       HADB04-G_S71_L005_R1_001.fastq  HADB04-N_S78_L005_R1_001.fastq
+HADB04-A_S65_L005_R1_001.fastq  HADB04-H_S72_L005_R1_001.fastq  HADB04-O_S79_L005_R1_001.fastq
+HADB04-B_S66_L005_R1_001.fastq  HADB04-I_S73_L005_R1_001.fastq  HADB04-P_S80_L005_R1_001.fastq
+HADB04-C_S67_L005_R1_001.fastq  HADB04-J_S74_L005_R1_001.fastq  KCridCopyLane04.sh
+HADB04-D_S68_L005_R1_001.fastq  HADB04-K_S75_L005_R1_001.fastq  KCridCopyLane04.txt
+HADB04-E_S69_L005_R1_001.fastq  HADB04-L_S76_L005_R1_001.fastq  KCridGunzipLane04.sh
+HADB04-F_S70_L005_R1_001.fastq  HADB04-M_S77_L005_R1_001.fastq  KCridGunzipLane04.txt
+
+```
