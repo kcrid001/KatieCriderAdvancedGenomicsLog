@@ -1,6 +1,7 @@
-## Katie Crider's Advanced Genomics Log (Spring 2021)
+# Katie Crider's Advanced Genomics Log
+## Spring 2021
 
-## Day 02 Exercises: 2021-01-22
+## Day 02 Exercises: 1/22/21
 ``` sh
 #exercises day02:
 
@@ -98,14 +99,15 @@ Yes
 
 #13- push your notebook file to your github page
 (base) Katies-MacBook-Air-4:KatieCriderAdvancedGenomicsLog katiecrider$ git add README.md
-(base) Katies-MacBook-Air-4:KatieCriderAdvancedGenomicsLog katiecrider$ git commit -m ‘updating notebook with day02 exercises’
+(base) Katies-MacBook-Air-4:KatieCriderAdvancedGenomicsLog katiecrider$ git commit -m 'updating notebook with day02 exercises'
 (base) Katies-MacBook-Air-4:KatieCriderAdvancedGenomicsLog katiecrider$ git push -u origin main
 
 ```
 
+
 ## Day 03 Exercises/Day 2 HW: 1/27/21
 ``` sh
-#exercises day03 / Day02HW:
+#exercises day03 /Day02HW:
 
 #1 Write an sbatch script to cp the files /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/originalfastqs/ into your own data directory
 
@@ -191,6 +193,9 @@ HADB04-E_S69_L005_R1_001.fastq  HADB04-L_S76_L005_R1_001.fastq  KCridGunzipLane0
 HADB04-F_S70_L005_R1_001.fastq  HADB04-M_S77_L005_R1_001.fastq  KCridGunzipLane04.txt
 
 ```
+
+
+
 ## Day 03 HW: 1/28/21
 ``` sh
 #HW day03:
@@ -467,153 +472,10 @@ KCridRenamer.txt            RI_B_04_22.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq
 renamingtable_complete.txt  RI_B_05_14.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq  VA_W_05_14.fastq
 
 #13. Make a sbatch script for the Trimclipfilter... script and run it on your fastq files
-
-
-
-# Raw code for everything I did during problem 13. It's kinda messy. I tried 3 different sbatch scripts, I did the cat command after each one to display the changes I made.
-
-
-[kcrid001@turing1 fastq]$ mkdir Testing
-[kcrid001@turing1 fastq]$ ls
-adapterlist_advbioinf.txt   RI_B_04_18.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq  VA_W_05_14.fastq
-KCridRenamer.sh             RI_B_04_22.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq
-KCridRenamer.txt            RI_B_05_14.fastq  Testing           VA_W_04_14.fastq
-renamingtable_complete.txt  RI_W_04_14.fastq  VA_B_04_14.fastq  VA_W_04_18.fastq
-RI_B_04_14.fastq            RI_W_04_18.fastq  VA_B_04_18.fastq  VA_W_04_22.fastq
-[kcrid001@turing1 fastq]$ cd Testing
-[kcrid001@turing1 Testing]$ pwd
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/Testing
-[kcrid001@turing1 Testing]$ nano TestTrimClip.sh
-[kcrid001@turing1 Testing]$ cat TestTrimClip.sh 
-#!/bin/bash -l
-
-#SBATCH -o KCridtestTrimclip.txt
-#SBATCH -n 1
-#SBATCH --mail-user=kcrid001@odu.edu
-#SBATCH --mail-type=END
-#SBATCH --job-name=KCridTrimTest
-
-../../../scripts/Trimclipfilterstatsbatch_advbioinf.py adapterlist_advbioinf.txt *.fastq
-[kcrid001@turing1 Testing]$ cd ../../../scripts
-[kcrid001@turing1 scripts]$ ls
-avg_cov_len_fasta_advbioinf.py  renamer_advbioinf.py  Trimclipfilterstatsbatch_advbioinf.py
-[kcrid001@turing1 scripts]$ cd 
-avg_cov_len_fasta_advbioinf.py*        Trimclipfilterstatsbatch_advbioinf.py*
-renamer_advbioinf.py*                  
-[kcrid001@turing1 scripts]$ cd ../../../
-[kcrid001@turing1 21AdvGenomics]$ cd sandboxes/
-[kcrid001@turing1 sandboxes]$ cd katiecrider/
-[kcrid001@turing1 katiecrider]$ cd 
-data/                groundrules.txt*     scripts/             
-day03/               kcrid_exercise1.txt* 
-[kcrid001@turing1 katiecrider]$ cd data
-[kcrid001@turing1 data]$ cd 
-exercises/             KCridCopyLane04.sh*    KCridGunzipLane04.sh*  
-fastq/                 KCridCopyLane04.txt*   KCridGunzipLane04.txt* 
-[kcrid001@turing1 data]$ cd fastq
-[kcrid001@turing1 fastq]$ ls
-adapterlist_advbioinf.txt   RI_B_04_18.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq  VA_W_05_14.fastq
-KCridRenamer.sh             RI_B_04_22.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq
-KCridRenamer.txt            RI_B_05_14.fastq  Testing           VA_W_04_14.fastq
-renamingtable_complete.txt  RI_W_04_14.fastq  VA_B_04_14.fastq  VA_W_04_18.fastq
-RI_B_04_14.fastq            RI_W_04_18.fastq  VA_B_04_18.fastq  VA_W_04_22.fastq
-[kcrid001@turing1 fastq]$ cd Testing
-[kcrid001@turing1 Testing]$ salloc
-salloc: Pending job allocation 9270868
-salloc: job 9270868 queued and waiting for resources
-salloc: job 9270868 has been allocated resources
-salloc: Granted job allocation 9270868
-[kcrid001@coreV2-25-049 Testing]$ sbatch TestTrimClip.sh
-Submitted batch job 9270869
-[kcrid001@coreV2-25-049 Testing]$ squeue -u kcrid001
-             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
-           9270869      main KCridTri kcrid001 PD       0:00      1 (Priority) 
-           9270868      main       sh kcrid001  R       1:12      1 coreV2-25-049 
-[kcrid001@coreV2-25-049 Testing]$ ls
-KCridtestTrimclip.txt  TestTrimClip.sh
-[kcrid001@coreV2-25-049 Testing]$ cat TestTrimClip.sh 
-#!/bin/bash -l
-
-#SBATCH -o KCridtestTrimclip.txt
-#SBATCH -n 1
-#SBATCH --mail-user=kcrid001@odu.edu
-#SBATCH --mail-type=END
-#SBATCH --job-name=KCridTrimTest
-
-../../../scripts/Trimclipfilterstatsbatch_advbioinf.py adapterlist_advbioinf.txt *.fastq
-[kcrid001@coreV2-25-049 Testing]$ ls
-KCridtestTrimclip.txt  TestTrimClip.sh
-[kcrid001@coreV2-25-049 Testing]$ cd ../../../scripts/
-[kcrid001@coreV2-25-049 scripts]$ ls
-avg_cov_len_fasta_advbioinf.py  renamer_advbioinf.py  Trimclipfilterstatsbatch_advbioinf.py
-[kcrid001@coreV2-25-049 scripts]$ cd ../../
-[kcrid001@coreV2-25-049 sandboxes]$ cd katiecrider/
-[kcrid001@coreV2-25-049 katiecrider]$ ls
-data  day03  groundrules.txt  kcrid_exercise1.txt  scripts
-[kcrid001@coreV2-25-049 katiecrider]$ cd data
-[kcrid001@coreV2-25-049 data]$ cd 
-exercises/             KCridCopyLane04.sh*    KCridGunzipLane04.sh*  
-fastq/                 KCridCopyLane04.txt*   KCridGunzipLane04.txt* 
-[kcrid001@coreV2-25-049 data]$ cd fastq/
-[kcrid001@coreV2-25-049 fastq]$ ls
-adapterlist_advbioinf.txt   RI_B_04_18.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq  VA_W_05_14.fastq
-KCridRenamer.sh             RI_B_04_22.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq
-KCridRenamer.txt            RI_B_05_14.fastq  Testing           VA_W_04_14.fastq
-renamingtable_complete.txt  RI_W_04_14.fastq  VA_B_04_14.fastq  VA_W_04_18.fastq
-RI_B_04_14.fastq            RI_W_04_18.fastq  VA_B_04_18.fastq  VA_W_04_22.fastq
-[kcrid001@coreV2-25-049 fastq]$ cd Testing
-[kcrid001@coreV2-25-049 Testing]$ cd ../
-[kcrid001@coreV2-25-049 fastq]$ pwd
+[kcrid001@turing1 fastq]$ pwd
 /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq
-[kcrid001@coreV2-25-049 fastq]$ ls /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/*.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_18.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_22.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_05_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_W_04_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_W_04_18.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_W_04_22.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_W_05_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_B_04_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_B_04_18.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_B_04_22.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_B_05_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_W_04_14.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_W_04_18.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_W_04_22.fastq
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/VA_W_05_14.fastq
-[kcrid001@coreV2-25-049 fastq]$ ls
-adapterlist_advbioinf.txt   RI_B_04_18.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq  VA_W_05_14.fastq
-KCridRenamer.sh             RI_B_04_22.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq
-KCridRenamer.txt            RI_B_05_14.fastq  Testing           VA_W_04_14.fastq
-renamingtable_complete.txt  RI_W_04_14.fastq  VA_B_04_14.fastq  VA_W_04_18.fastq
-RI_B_04_14.fastq            RI_W_04_18.fastq  VA_B_04_18.fastq  VA_W_04_22.fastq
-[kcrid001@coreV2-25-049 fastq]$ cd ../
-[kcrid001@coreV2-25-049 data]$ ls
-exercises  KCridCopyLane04.sh   KCridGunzipLane04.sh
-fastq      KCridCopyLane04.txt  KCridGunzipLane04.txt
-[kcrid001@coreV2-25-049 data]$ cd ../
-[kcrid001@coreV2-25-049 katiecrider]$ ls
-data  day03  groundrules.txt  kcrid_exercise1.txt  scripts
-[kcrid001@coreV2-25-049 katiecrider]$ pwd
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider
-[kcrid001@coreV2-25-049 katiecrider]$ cd data
-[kcrid001@coreV2-25-049 data]$ cd 
-exercises/             KCridCopyLane04.sh*    KCridGunzipLane04.sh*  
-fastq/                 KCridCopyLane04.txt*   KCridGunzipLane04.txt* 
-[kcrid001@coreV2-25-049 data]$ cd fastq
-[kcrid001@coreV2-25-049 fastq]$ ls
-adapterlist_advbioinf.txt   RI_B_04_18.fastq  RI_W_04_22.fastq  VA_B_04_22.fastq  VA_W_05_14.fastq
-KCridRenamer.sh             RI_B_04_22.fastq  RI_W_05_14.fastq  VA_B_05_14.fastq
-KCridRenamer.txt            RI_B_05_14.fastq  Testing           VA_W_04_14.fastq
-renamingtable_complete.txt  RI_W_04_14.fastq  VA_B_04_14.fastq  VA_W_04_18.fastq
-RI_B_04_14.fastq            RI_W_04_18.fastq  VA_B_04_18.fastq  VA_W_04_22.fastq
-[kcrid001@coreV2-25-049 fastq]$ cd Testing
-[kcrid001@coreV2-25-049 Testing]$ ls
-KCridtestTrimclip.txt  TestTrimClip.sh
-[kcrid001@coreV2-25-049 Testing]$ nano KCridtestTrimclip.txt 
-[kcrid001@coreV2-25-049 Testing]$ nano TestTrimClip.sh 
-[kcrid001@coreV2-25-049 Testing]$ cat TestTrimClip.sh 
+[kcrid001@turing1 fastq]$ nano TestTrimClip.sh
+[kcrid001@turing1 fastq]$ cat TestTrimClip.sh
 #!/bin/bash -l
 
 #SBATCH -o KCridtestTrimclip.txt
@@ -622,63 +484,29 @@ KCridtestTrimclip.txt  TestTrimClip.sh
 #SBATCH --mail-type=END
 #SBATCH --job-name=KCridTrimTest
 
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py adapterlist_advbioinf.txt 
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/*.fastq
-[kcrid001@coreV2-25-049 Testing]$ sbatch TestTrimClip.sh
-Submitted batch job 9270902
-[kcrid001@coreV2-25-049 Testing]$ squeue -u kcrid001
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py adapterlist_advbioinf.txt *.fastq
+
+[kcrid001@turing1 fastq]$ salloc
+salloc: Pending job allocation 9271050
+salloc: job 9271050 queued and waiting for resources
+salloc: job 9271050 has been allocated resources
+salloc: Granted job allocation 9271050
+[kcrid001@coreV1-22-005 fastq]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq
+[kcrid001@coreV1-22-005 fastq]$ sbatch TestTrimClip.sh
+Submitted batch job 9271051
+[kcrid001@coreV1-22-005 fastq]$ squeue -u kcrid001
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
-           9270902      main KCridTri kcrid001 PD       0:00      1 (Priority) 
-           9270868      main       sh kcrid001  R    3:25:51      1 coreV2-25-049 
-[kcrid001@coreV2-25-049 Testing]$ ls
-KCridtestTrimclip.txt  TestTrimClip.sh
-[kcrid001@coreV2-25-049 Testing]$ cat KCridtestTrimclip.txt 
-Traceback (most recent call last):
-  File "../../../scripts/Trimclipfilterstatsbatch_advbioinf.py", line 16, in <module>
-    adapters=open(sys.argv[1], 'r')
-IOError: [Errno 2] No such file or directory: 'adapterlist_advbioinf.txt'
-Traceback (most recent call last):
-  File "/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py", line 16, in <module>
-    adapters=open(sys.argv[1], 'r')
-IOError: [Errno 2] No such file or directory: 'adapterlist_advbioinf.txt'
-/var/spool/slurmd/job9270902/slurm_script: line 10: /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_14.fastq: Permission denied
-[kcrid001@coreV2-25-049 Testing]$ nano KCridtestTrimclip.txt 
-[kcrid001@coreV2-25-049 Testing]$ nano TestTrimClip.sh 
-[kcrid001@coreV2-25-049 Testing]$ cat TestTrimClip.sh 
-#!/bin/bash -l
+           9271051      main KCridTri kcrid001  R      10:22      1 coreV2-22-007 
+           9271050      main       sh kcrid001  R      11:22      1 coreV1-22-005 
 
-#SBATCH -o KCridtestTrimclip.txt
-#SBATCH -n 1
-#SBATCH --mail-user=kcrid001@odu.edu
-#SBATCH --mail-type=END
-#SBATCH --job-name=KCridTrimTest
+#I was confused on if I had to do the FullTrimClip next, because they look like the same thing, but I think the TestTrimClip is working (see list below)
 
-/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/adapterlist_advbioinf.txt /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/*.fastq
-[kcrid001@coreV2-25-049 Testing]$ sbatch TestTrimClip.sh
-Submitted batch job 9270904
-[kcrid001@coreV2-25-049 Testing]$ nano KCridtestTrimclip.txt 
-[kcrid001@coreV2-25-049 Testing]$ cd ../
-[kcrid001@coreV2-25-049 fastq]$ ls
-adapterlist_advbioinf.txt  renamingtable_complete.txt  RI_B_04_22.fastq  RI_W_04_18.fastq  Testing           VA_B_04_22.fastq  VA_W_04_18.fastq
-KCridRenamer.sh            RI_B_04_14.fastq            RI_B_05_14.fastq  RI_W_04_22.fastq  VA_B_04_14.fastq  VA_B_05_14.fastq  VA_W_04_22.fastq
-KCridRenamer.txt           RI_B_04_18.fastq            RI_W_04_14.fastq  RI_W_05_14.fastq  VA_B_04_18.fastq  VA_W_04_14.fastq  VA_W_05_14.fastq
-[kcrid001@coreV2-25-049 fastq]$ cd Testing
-[kcrid001@coreV2-25-049 Testing]$ cat KCridtestTrimclip.txt 
-Traceback (most recent call last):
-  File "../../../scripts/Trimclipfilterstatsbatch_advbioinf.py", line 16, in <module>
-    adapters=open(sys.argv[1], 'r')
-IOError: [Errno 2] No such file or directory: 'adapterlist_advbioinf.txt'
-Traceback (most recent call last):
-  File "/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py", line 16, in <module>
-    adapters=open(sys.argv[1], 'r')
-IOError: [Errno 2] No such file or directory: 'adapterlist_advbioinf.txt'
-/var/spool/slurmd/job9270902/slurm_script: line 10: /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_14.fastq: Permission denied
-Traceback (most recent call last):
-  File "/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py", line 64, in <module>
-    adapterclip_batch_single(sys.argv[2:], 'trimclipstats.txt', qualoffset)
-  File "/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/scripts/Trimclipfilterstatsbatch_advbioinf.py", line 30, in adapterclip_batch_single
-    cmd="/cm/shared/courses/dbarshis/15AdvBioinf/scripts/fastx_toolkit/fastx_clipper -a %s -l 20 -Q %d -n -v -i %s -o %s >> %s" % (adaptdict[fastq], qualoffset, fastq, fastq_prefix+'_clipped.fastq', outfile)
-KeyError: '/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/RI_B_04_14.fastq'
-[kcrid001@coreV2-25-049 Testing]$
-```
+[kcrid001@coreV1-22-005 fastq]$ ls
+adapterlist_advbioinf.txt  renamingtable_complete.txt  RI_W_04_14.fastq  trimclipstats.txt  VA_W_04_18.fastq
+FullTrimClip.sh            RI_B_04_14_clipped.fastq    RI_W_04_18.fastq  VA_B_04_14.fastq   VA_W_04_22.fastq
+KCridFullTrimclip.txt      RI_B_04_14.fastq            RI_W_04_22.fastq  VA_B_04_18.fastq   VA_W_05_14.fastq
+KCridRenamer.sh            RI_B_04_18.fastq            RI_W_05_14.fastq  VA_B_04_22.fastq
+KCridRenamer.txt           RI_B_04_22.fastq            Testing           VA_B_05_14.fastq
+KCridtestTrimclip.txt      RI_B_05_14.fastq            TestTrimClip.sh   VA_W_04_14.fastq
 
