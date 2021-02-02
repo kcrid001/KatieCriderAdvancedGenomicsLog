@@ -510,3 +510,73 @@ KCridRenamer.sh            RI_B_04_18.fastq            RI_W_05_14.fastq  VA_B_04
 KCridRenamer.txt           RI_B_04_22.fastq            Testing           VA_B_05_14.fastq
 KCridtestTrimclip.txt      RI_B_05_14.fastq            TestTrimClip.sh   VA_W_04_14.fastq
 
+```
+
+## Day 04 HW: 1/29/21
+``` sh
+#HW Day 04:
+
+#1. Add your trimclipstats.txt output to the full class datafile /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/Fulltrimclipstatstable.txt using the following steps
+#1a. run /cm/shared/courses/dbarshis/21AdvGenomics/scripts/Schafran_trimstatstable_advbioinf_clippedtrimmed.py -h to examine usage
+[kcrid001@coreV1-22-005 fastq]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq
+[kcrid001@coreV1-22-005 fastq]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/Schafran_trimstatstable_advbioinf_clippedtrimmed.py -h
+Written by Peter Schafran pscha005@odu.edu 5-Oct-2015
+
+This script takes a stats output file from fastx_clipper and converts it into a table.
+
+Usage: Schafran_trimstatstable.py [-c, -v, -h] inputfile.txt outputfile.txt
+
+Options (-c and -v must be listed separately to run together):
+-h	Display this help message
+-c	Use comma delimiter instead of tabs
+-v	Verbose mode (print steps to stdout)
+
+#1b. Run the script on your data with the outputfilename YOURNAME_trimclipstatsout.txt
+[kcrid001@coreV2-22-007 fastq]$ cd filteringstats
+[kcrid001@coreV2-22-007 filteringstats]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/filteringstats
+[kcrid001@coreV2-22-007 filteringstats]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/Schafran_trimstatstable_advbioinf_clippedtrimmed.py trimclipstats.txt KCrid_trimclipstatsout.txt
+
+#1c. Add YOURNAME_trimclipstatsout.txt to the class file by running tail -n +2 YOURNAME_trimclipstatsout.txt >> /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/Fulltrimclipstatstable.txt
+
+[kcrid001@coreV2-25-047 filteringstats]$ tail -n +2 KCrid_trimclipstatsout.txt >> /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/Fulltrimclipstatstable.txt
+
+
+#2. Now we're going to map our reads back to our assembly using the bowtie2 alignment algorithm (starting to follow this pipeline https://github.com/bethsheets/SNPcalling_tutorial)
+#3. write a sbatch script to do the following commands in sequence on your _clippedtrimmedfilterd.fastq datafiles from your lane of data
+[kcrid001@coreV2-25-047 filteringstats]$ cd ../
+[kcrid001@coreV2-25-047 fastq]$ cd QCFastqs/
+[kcrid001@coreV2-25-047 QCFastqs]$ ls
+RI_B_04_14_clippedtrimmed.fastq  RI_W_04_22_clippedtrimmed.fastq  VA_W_04_14_clippedtrimmed.fastq
+RI_B_04_18_clippedtrimmed.fastq  RI_W_05_14_clippedtrimmed.fastq  VA_W_04_18_clippedtrimmed.fastq
+RI_B_04_22_clippedtrimmed.fastq  VA_B_04_14_clippedtrimmed.fastq  VA_W_04_22_clippedtrimmed.fastq
+RI_B_05_14_clippedtrimmed.fastq  VA_B_04_18_clippedtrimmed.fastq  VA_W_05_14_clippedtrimmed.fastq
+RI_W_04_14_clippedtrimmed.fastq  VA_B_04_22_clippedtrimmed.fastq
+RI_W_04_18_clippedtrimmed.fastq  VA_B_05_14_clippedtrimmed.fastq
+[kcrid001@coreV2-25-047 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV2-25-047 QCFastqs]$ nano bowtiealn.sh
+[kcrid001@coreV2-25-047 QCFastqs]$ cat bowtiealn.sh 
+#!/bin/bash -l
+
+#SBATCH -o KCridbowtie2.txt
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=newbowtie
+
+module load bowtie2/2.4
+for i in *_clippedtrimmed.fastq; do bowtie2 --rg-id ${i%_clippedtrimmed.fastq} \
+--rg SM:${i%_clippedtrimmed.fastq} \
+--very-sensitive -x /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/refassembly/Apoc_hostsym -U $i \
+> ${i%_clippedtrimmedfilterd.fastq}.sam --no-unal -k 5; done
+[kcrid001@coreV2-25-047 QCFastqs]$ sbatch bowtiealn.sh 
+Submitted batch job 9271852
+[kcrid001@coreV2-25-047 QCFastqs]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9271852      main newbowti kcrid001  R       0:01      1 coreV2-25-005 
+           9271848      main       sh kcrid001  R      18:01      1 coreV2-25-047 
+
+#4-Submit and add everything to your logfile
+*yep!
