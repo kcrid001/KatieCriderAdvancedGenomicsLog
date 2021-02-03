@@ -580,3 +580,73 @@ Submitted batch job 9271852
 
 #4-Submit and add everything to your logfile
 *yep!
+
+## Day05 HW 2/3/21
+```sh
+##Day05HW
+
+1-Team up with a partner for this one and work only on a combined set of data for your two lanes of sequences
+
+[kcrid001@coreV3-23-050 fastq]$ mkdir KCKCfastq
+[kcrid001@coreV3-23-050 fastq]$ ls
+filteringstats         KCridRenamer.txt            renamingtable_complete.txt
+FullTrimClip.sh        KCridtestTrimclip.txt       Testing
+KCKCfastq              KCrid_trimclipstatsout.txt  TestTrimClip.sh
+KCridFullTrimclip.txt  originalfastqs
+KCridRenamer.sh        QCFastqs
+[kcrid001@coreV3-23-050 fastq]$ cd KCKCfastq/
+[kcrid001@coreV3-23-050 KCKCfastq]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq
+
+[kcrid001@coreV3-23-050 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV3-23-050 QCFastqs]$ cp /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs/*.fastq /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq
+# we both copied our clippedtrimmed.fastq files to the new KCKCfastq directory (Katie C & Kristina)
+[kcrid001@coreV3-23-050 KCKCfastq]$ ls
+KCKCTrinitydenovo.sh              VA_B_01_14_clippedtrimmed.fastq
+RI_B_01_14_clippedtrimmed.fastq   VA_B_01_18_clippedtrimmed.fastq
+RI_B_01_18_clippedtrimmed.fastq   VA_B_01_22_clippedtrimmed.fastq
+RI_B_01_22_clippedtrimmed.fastq   VA_B_04_14_clippedtrimmed.fastq
+RI_B_04_14_clippedtrimmed.fastq   VA_B_04_18_clippedtrimmed.fastq
+RI_B_04_18_clippedtrimmed.fastq   VA_B_04_22_clippedtrimmed.fastq
+RI_B_04_22_clippedtrimmed.fastq   VA_B_05_14_clippedtrimmed.fastq
+RI_B_05_14_clippedtrimmed.fastq   VA_B_09_SNP_clippedtrimmed.fastq
+RI_B_08_SNP_clippedtrimmed.fastq  VA_W_01_14_clippedtrimmed.fastq
+RI_W_01_14_clippedtrimmed.fastq   VA_W_01_18_clippedtrimmed.fastq
+RI_W_01_18_clippedtrimmed.fastq   VA_W_01_22_clippedtrimmed.fastq
+RI_W_01_22_clippedtrimmed.fastq   VA_W_04_14_clippedtrimmed.fastq
+RI_W_04_14_clippedtrimmed.fastq   VA_W_04_18_clippedtrimmed.fastq
+RI_W_04_18_clippedtrimmed.fastq   VA_W_04_22_clippedtrimmed.fastq
+RI_W_04_22_clippedtrimmed.fastq   VA_W_05_14_clippedtrimmed.fastq
+RI_W_05_14_clippedtrimmed.fastq   VA_W_08_SNP_clippedtrimmed.fastq
+RI_W_08_SNP_clippedtrimmed.fastq
+# we have 32 files, 16 for each of us. All files have copied
+
+2-Run the Trinity denovo assembler on your clippedtrimmed.fastq files for your two lanes together
+3-Modify the below sbatch script (note the differences in the header compared to the previous one)
+
+[kcrid001@coreV3-23-050 KCKCfastq]$ nano KCKCTrinitydenovo.sh
+[kcrid001@coreV3-23-050 KCKCfastq]$ cat KCKCTrinitydenovo.sh 
+#!/bin/bash -l
+
+#SBATCH -o KCKCTrinitydenovo.txt
+#SBATCH -n 32
+#SBATCH -p himem
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCKCTrinitydenovo
+
+enable_lmod
+module load container_env trinity
+
+crun Trinity --seqType fq --max_memory 768G --normalize_reads --single RI_B_04_14_clippedtrimmed.fastq,VA_B_04_14_clippedtrimmed.fastq,RI_B_04_18_clippedtrimmed.fastq,VA_B_04_18_clippedtrimmed.fastq,RI_B_04_22_clippedtrimmed.fastq,VA_B_04_22_clippedtrimmed.fastq,RI_B_05_14_clippedtrimmed.fastq,VA_B_05_14_clippedtrimmed.fastq,RI_W_04_14_clippedtrimmed.fastq,VA_W_04_14_clippedtrimmed.fastq,RI_W_04_18_clippedtrimmed.fastq,VA_W_04_18_clippedtrimmed.fastq,RI_W_04_22_clippedtrimmed.fastq,VA_W_04_22_clippedtrimmed.fastq,RI_W_05_14_clippedtrimmed.fastq,VA_W_05_14_clippedtrimmed.fastq,RI_B_01_14_clippedtrimmed.fastq,RI_B_01_18_clippedtrimmed.fastq,RI_B_01_22_clippedtrimmed.fastq,RI_B_08_SNP_clippedtrimmed.fastq,RI_W_01_14_clippedtrimmed.fastq,RI_W_01_18_clippedtrimmed.fastq,RI_W_01_22_clippedtrimmed.fastq,RI_W_08_SNP_clippedtrimmed.fastq,VA_B_01_14_clippedtrimmed.fastq,VA_B_01_18_clippedtrimmed.fastq,VA_B_01_22_clippedtrimmed.fastq,VA_B_09_SNP_clippedtrimmed.fastq,VA_W_01_14_clippedtrimmed.fastq,VA_W_01_18_clippedtrimmed.fastq,VA_W_01_22_clippedtrimmed.fastq,VA_W_08_SNP_clippedtrimmed.fastq --CPU 32
+
+4-Check https://trinityrnaseq.github.io/ for usage info
+
+5-Submit your trinity script
+[kcrid001@coreV3-23-050 KCKCfastq]$ sbatch KCKCTrinitydenovo.sh
+Submitted batch job 9272362
+[kcrid001@coreV3-23-050 KCKCfastq]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq
+
+```
