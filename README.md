@@ -651,7 +651,7 @@ Submitted batch job 9272362
 
 ```
 
-##Day06 HW
+## Day06 HW
 ```sh
 #day06HW
 ####Make sure to add all this to your logfile as you go, including the output from the various scripts/greps/etc.
