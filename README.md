@@ -580,7 +580,7 @@ Submitted batch job 9271852
 
 #4-Submit and add everything to your logfile
 *yep!
-```
+
 ## Day05 HW 2/3/21
 ```sh
 ##Day05HW
@@ -648,5 +648,401 @@ crun Trinity --seqType fq --max_memory 768G --normalize_reads --single RI_B_04_1
 Submitted batch job 9272362
 [kcrid001@coreV3-23-050 KCKCfastq]$ pwd
 /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq
+
+```
+
+##Day06 HW
+```sh
+#day06HW
+####Make sure to add all this to your logfile as you go, including the output from the various scripts/greps/etc.
+###Assembly quality assessment (following the first two steps in the recommended trinity assessment protocol from https://github.com/trinityrnaseq/trinityrnaseq/wiki/Transcriptome-Assembly-Quality-Assessment)
+
+
+#1- start an interactive session via salloc and run the /cm/shared/apps/trinity/2.0.6/util/TrinityStats.pl script on your Trinity.fasta output from your assembly
+
+[kcrid001@turing1 trinity_out_dir]$ salloc
+salloc: Pending job allocation 9272857
+salloc: job 9272857 queued and waiting for resources
+salloc: job 9272857 has been allocated resources
+salloc: Granted job allocation 9272857
+[kcrid001@coreV2-22-028 trinity_out_dir]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq/trinity_out_dir
+
+[kcrid001@coreV2-22-028 trinity_out_dir]$ /cm/shared/apps/trinity/2.0.6/util/TrinityStats.pl Trinity.fasta
+
+
+################################
+## Counts of transcripts, etc.
+################################
+Total trinity 'genes':	39219
+Total trinity transcripts:	41303
+Percent GC: 44.54
+
+########################################
+Stats based on ALL transcript contigs:
+########################################
+
+	Contig N10: 1323
+	Contig N20: 783
+	Contig N30: 562
+	Contig N40: 440
+	Contig N50: 364
+
+	Median contig length: 277
+	Average contig: 371.08
+	Total assembled bases: 15326666
+
+
+#####################################################
+## Stats based on ONLY LONGEST ISOFORM per 'GENE':
+#####################################################
+
+	Contig N10: 1094
+	Contig N20: 682
+	Contig N30: 511
+	Contig N40: 410
+	Contig N50: 347
+
+	Median contig length: 274
+	Average contig: 355.69
+	Total assembled bases: 13949619
+
+
+#2- compare this with the output from avg_cov_len_fasta_advbioinf.py on our class reference assembly (/cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/refassembly/15079_Apoc_hostsym.fasta) and add both to your logfile
+
+[kcrid001@coreV2-22-028 trinity_out_dir]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/avg_cov_len_fasta_advbioinf.py Trinity.fasta
+The total number of sequences is 41303
+The average sequence length is 371
+The total number of bases is 15326666
+The minimum sequence length is 184
+The maximum sequence length is 10771
+The N50 is 364
+Median Length = 627
+contigs < 150bp = 0
+contigs >= 500bp = 5936
+contigs >= 1000bp = 1364
+contigs >= 2000bp = 265
+
+
+#3- less or head your bowtie2 job output file to look at your alignment statistics and calculate the following from the information:
+	a-the mean percent "overall alignment rate"
+	b-the mean percent reads "aligned exactly 1 time"
+	c-the mean number of reads "aligned exactly 1 time"
+	d-the mean percent reads "aligned >1 times"
+	
+	hint use grep and paste into excel
+
+[kcrid001@coreV2-22-028 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV2-22-028 QCFastqs]$ less KCridbowtie2.txt 
+    366410 (2.11%) aligned exactly 1 time
+    196159 (1.13%) aligned >1 times
+3.25% overall alignment rate
+28980402 reads; of these:
+  28980402 (100.00%) were unpaired; of these:
+    28428026 (98.09%) aligned 0 times
+    302622 (1.04%) aligned exactly 1 time
+    249754 (0.86%) aligned >1 times
+1.91% overall alignment rate
+22997803 reads; of these:
+  22997803 (100.00%) were unpaired; of these:
+    22542136 (98.02%) aligned 0 times
+    281735 (1.23%) aligned exactly 1 time
+    173932 (0.76%) aligned >1 times
+1.98% overall alignment rate
+18509735 reads; of these:
+  18509735 (100.00%) were unpaired; of these:
+    18027510 (97.39%) aligned 0 times
+    262310 (1.42%) aligned exactly 1 time
+    219915 (1.19%) aligned >1 times
+2.61% overall alignment rate
+15268908 reads; of these:
+  15268908 (100.00%) were unpaired; of these:
+    14979814 (98.11%) aligned 0 times
+    178865 (1.17%) aligned exactly 1 time
+    110229 (0.72%) aligned >1 times
+1.89% overall alignment rate
+
+
+kcrid001@coreV2-22-028 QCFastqs]$ grep "overall alignment rate" KCridbowtie2.txt | cut -d " " -f 1 | cut -d "%" -f 1
+2.48
+1.70
+1.45
+2.32
+6.81
+2.25
+2.12
+1.85
+2.00
+2.70
+2.36
+3.25
+1.91
+1.98
+2.61
+1.89
+[kcrid001@coreV2-22-028 QCFastqs]$ grep "aligned exactly 1 time" KCridbowtie2.txt | cut -d "(" -f 2 | cut -d "%" -f 1
+1.41
+1.12
+0.85
+1.66
+1.18
+1.26
+1.06
+1.10
+1.10
+1.51
+1.53
+2.11
+1.04
+1.23
+1.42
+1.17
+[kcrid001@coreV2-22-028 QCFastqs]$ grep "aligned exactly 1 time" KCridbowtie2.txt | cut -d " " -f 5
+370715
+569956
+82036
+677289
+38461
+303192
+11115
+409225
+189559
+281489
+300187
+366410
+302622
+281735
+262310
+178865
+[kcrid001@coreV2-22-028 QCFastqs]$ grep "aligned >1 times" KCridbowtie2.txt | cut -d "(" -f 2 | cut -d "%" -f 1
+1.07
+0.58
+0.60
+0.67
+5.63
+1.00
+1.06
+0.74
+0.90
+1.19
+0.83
+1.13
+0.86
+0.76
+1.19
+0.72
+
+# copy these values to excel, calculate averages as needed
+# answers
+	# a - 2.48% - the mean percent "overall alignment rate"
+	# b - 1.30% - the mean percent reads "aligned exactly 1 time"
+	# c - 289072.88 - the mean number of reads "aligned exactly 1 time"
+	# d - 1.18% - the mean percent reads "aligned >1 times"
+
+
+#4- add your statistics as single rows to the shared table /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/alignmentstatstable.txt as tab-delimited text in the following order:
+LaneX_yourinitials	b-the mean percent "overall alignment rate"	c-the mean percent reads "aligned exactly 1 time"	d-the mean number of reads "aligned exactly 1 time"	e-the mean percent reads "aligned >1 times"
+
+[kcrid001@coreV2-22-028 QCFastqs]$ nano alignstats.txt
+[kcrid001@coreV2-22-028 QCFastqs]$ cat alignstats.txt >> /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/alignmentstatstable.txt
+[kcrid001@coreV2-22-028 QCFastqs]$ cat /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/alignmentstatstable.txt
+LaneX	overallalignmentrate	percsinglyaligned	numsinglyaligned	percmultiplyaligned
+LaneX_djb	2.495714286	1.251428571	247656.7143	1.247142857
+LaneX_djb	2.495714286	1.251428571	247656.7143	1.247142857
+Lane1AP	5.378125	1.3725	300361.8125	4.005
+lane5_sg	2.03%	1.11%	235455.75	0.92%
+LaneX_jcw	2.495714286	1.251428571	247656.7143	1.247142857
+Lane4_KCrid	2.48	1.30	289072.88	1.18
+
+#5- Data cleanup and archiving:
+*a-mv your Trinity.fasta file from your trinity_out_dir to a folder called testassembly in your data directory
+	
+[kcrid001@turing1 data]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+[kcrid001@turing1 data]$ mkdir testassembly
+[kcrid001@turing1 data]$ ls
+exercises  KCridCopyLane04.sh   KCridGunzipLane04.sh   testassembly
+fastq      KCridCopyLane04.txt  KCridGunzipLane04.txt
+[kcrid001@turing1 trinity_out_dir]$ salloc
+salloc: Pending job allocation 9275008
+salloc: job 9275008 queued and waiting for resources
+salloc: job 9275008 has been allocated resources
+salloc: Granted job allocation 9275008
+[kcrid001@coreV1-22-016 trinity_out_dir]$ mv /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq/trinity_out_dir/Trinity.fasta /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/testassembly
+
+*b-set up a sbatch script to:
+		rm -r YOURtrinity_out_dir
+		rm -r YOURoriginalfastqs
+		rm -r YOURfilteringstats # as long as you've already appended your filteringstats output to the class table as part of homework_day04.txt
+
+[kcrid001@coreV1-22-016 data]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data
+[kcrid001@coreV1-22-016 data]$ nano Cleanup.txt
+[kcrid001@coreV1-22-016 data]$ cat Cleanup.txt 
+#!/bin/bash -l
+
+#SBATCH -o Cleanup.txt
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=Cleanup
+
+rm -r /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/KCKCfastq/trinity_out_dir
+rm -r /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/originalfastqs
+rm -r /cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/filteringstats
+
+[kcrid001@coreV1-22-016 data]$ sbatch Cleanup.sh 
+Submitted batch job 9275062
+[kcrid001@coreV1-22-016 data]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9275062      main  Cleanup kcrid001  R       0:07      1 coreV1-22-016 
+           9275008      main       sh kcrid001  R      22:37      1 coreV1-22-016 
+
+#6- submit a blast against sprot from your testassembly folder using the following command
+
+[kcrid001@coreV1-22-016 testassembly]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/testassembly
+[kcrid001@coreV1-22-016 testassembly]$ ls
+Trinity.fasta
+[kcrid001@coreV1-22-016 testassembly]$ nano Blast.sh
+[kcrid001@coreV1-22-016 testassembly]$ cat Blast.sh 
+#!/bin/bash -l
+
+#SBATCH -o Blast.txt
+#SBATCH -n 6         
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=Blast
+
+enable_lmod
+module load container_env blast
+blastx -query Trinity.fasta -db /cm/shared/apps/blast/databases/uniprot_sprot_Sep2018 -out blastx.outfmt6 \
+        -evalue 1e-20 -num_threads 6 -max_target_seqs 1 -outfmt 6
+[kcrid001@coreV1-22-016 testassembly]$ sbatch Blast.sh 
+Submitted batch job 9275071
+[kcrid001@coreV1-22-016 testassembly]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9275071      main    Blast kcrid001  R       1:53      1 coreV3-23-027 
+           9275062      main  Cleanup kcrid001  R       6:23      1 coreV1-22-016 
+           9275008      main       sh kcrid001  R      28:53      1 coreV1-22-016 
+
+###Exploring our SAM files, check out http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#sam-output for bowtie2 specific output and http://bio-bwa.sourceforge.net/bwa.shtml#4 for general SAM output
+
+#7- head one of your .sam files to look at the header
+
+[kcrid001@coreV2-22-028 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV2-22-028 QCFastqs]$ head RI_B_04_14_clippedtrimmed.fastq.sam
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:TR78|c0_g1_i1_coral	LN:1109
+@SQ	SN:TR78|c0_g2_i1_coral	LN:1109
+@SQ	SN:TR79|c0_g1_i1_coral	LN:610
+@SQ	SN:TR79|c0_g2_i1_coral	LN:1549
+@SQ	SN:TR87|c0_g1_i1_coral	LN:732
+@SQ	SN:TR93|c0_g1_i1_coral	LN:550
+@SQ	SN:TR101|c0_g1_i1_coral	LN:673
+@SQ	SN:TR104|c0_g1_i1_coral	LN:607
+@SQ	SN:TR105|c0_g1_i1_coral	LN:587
+
+
+#8- grep -v '@' your.sam | head to look at the sequence read lines, why does this work to exclude the header lines?
+	#because the -v flag means to omit lines with the indicated symbol
+
+[kcrid001@coreV2-22-028 QCFastqs]$ grep -v '@' RI_B_04_14_clippedtrimmed.fastq.sam | head
+K00188:59:HMTFHBBXX:5:1101:6055:1648	16	TR13320|c0_g2_i1_coral	2	253M4I44M	*	0	0	TTGAATCATTCTTGTCTACTCCAAGGGGTCTACTTTCCTCAAGGTTTCCNJJJFJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJFJJJJJJJJJJFFA#A	AS:i:-30	XN:i:0	XM:i:3	XO:i:1	XG:i:4	NM:i:7	MD:Z:0A1C42A1	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:9597:1666	0	TR35685|c1_g2_i1_coral	535	2520M	*	0	0	GACAACCCCGTCTGTGGCGC	AAFFFJJJJJJJJJJJJJJJ	AS:i:-6	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:6A13	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:26281:1666	16	TR59703|c0_g1_i3_sym	244	1	51M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTFJJFJJFJJJJJJJJJJJFJJJJJJJJAJJJJJJJJFJJJJJJFJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:26281:1666	272	TR59703|c0_g1_i1_sym	277	2551M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTFJJFJJFJJJJJJJJJJJFJJJJJJJJAJJJJJJJJFJJJJJJFJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:26281:1666	272	TR59703|c0_g1_i3_coral	244	2551M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTFJJFJJFJJJJJJJJJJJFJJJJJJJJAJJJJJJJJFJJJJJJFJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:26281:1666	272	TR59703|c0_g1_i1_coral	277	2551M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTFJJFJJFJJJJJJJJJJJFJJJJJJJJAJJJJJJJJFJJJJJJFJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:9557:1701	0	TR30871|c0_g1_i1_coral	16	253M3I45M	*	0	0	GTGATAATGATGTTGGTGATAATGATGATGATGGTGGTGGTTGTGGTGTTAAFFFJJJJJFFJJJJJFJFJJAFJJJJJJJJJJFJJAJJJJJFJJFJFFJ	AS:i:-26	XN:i:0	XM:i:2	XO:i:1	XG:i:3	NM:i:5	MD:Z:6G5A35	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:28270:1701	16	TR5604|c0_g1_i1_coral	515	2551M	*	0	0	CTAAGGTTTGCTTTAAAGCACTTAGTTCAGAATCCTTTGTCTGTACAATTJJJJJJFJJJJJJJJJJJJJJJJJJJJF-JJJFJFJJJJJJJJJJJFFFAA	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:28371:1701	16	TR59703|c0_g1_i3_sym	244	1	51M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTJJJ7JJJJJJFJJJJJJJJJJJJJJJFAJJJJJJJJAJJJJJAJJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+K00188:59:HMTFHBBXX:5:1101:28371:1701	272	TR59703|c0_g1_i1_sym	277	2551M	*	0	0	CTGCTTCTAAACAGCTGGAGAAAGCTGAAATTCTGGAAAAGACAATTAGTJJJ7JJJJJJFJJJJJJJJJJJJJJJFAJJJJJJJJAJJJJJAJJJFFFAA	AS:i:0	XS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:51	YT:Z:UU	RG:Z:RI_B_04_14
+
+
+#9- in an interactive session run /cm/shared/courses/dbarshis/21AdvGenomics/scripts/get_explain_sam_flags_advbioinf.py on 2-3 of your .sam files using * to select 2-3 at the same time.
+
+[kcrid001@coreV1-22-016 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV1-22-016 QCFastqs]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/get_explain_sam_flags_advbioinf.py RI_B_04_14_clippedtrimmed.fastq.sam RI_B_04_18_clippedtrimmed.fastq.sam RI_B_04_22_clippedtrimmed.fastq.sam
+RI_B_04_14_clippedtrimmed.fastq.sam
+['0', '272', '256', '16']
+0 :
+272 :
+	read reverse strand
+	not primary alignment
+256 :
+	not primary alignment
+16 :
+	read reverse strand
+RI_B_04_18_clippedtrimmed.fastq.sam
+['0', '272', '256', '16']
+0 :
+272 :
+	read reverse strand
+	not primary alignment
+256 :
+	not primary alignment
+16 :
+	read reverse strand
+RI_B_04_22_clippedtrimmed.fastq.sam
+['0', '272', '256', '16']
+0 :
+272 :
+	read reverse strand
+	not primary alignment
+256 :
+	not primary alignment
+16 :
+	read reverse strand
+
+
+#10- we need to run the read sorting step required for SNP calling, so if you have time, set up and run the following script on your .sam files to finish before Wednesday:
+
+#!/bin/bash -l
+
+#SBATCH -o KCridBamandSort.txt
+#SBATCH -n 1         
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridBamandSort
+
+enable_lmod
+module load samtools/1
+for i in *.sam; do `samtools view -bS $i > ${i%.sam}_UNSORTED.bam`; done
+
+for i in *UNSORTED.bam; do samtools sort $i > ${i%_UNSORTED.bam}.bam
+samtools index ${i%_UNSORTED.bam}.bam
+done
+
+[kcrid001@coreV1-22-016 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV1-22-016 QCFastqs]$ cat bamandsort.sh
+#!/bin/bash -l
+
+#SBATCH -o KCridBamandSort.txt
+#SBATCH -n 1         
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridBamandSort
+
+enable_lmod
+module load samtools/1
+for i in *.sam; do `samtools view -bS $i > ${i%.sam}_UNSORTED.bam`; done
+
+for i in *UNSORTED.bam; do samtools sort $i > ${i%_UNSORTED.bam}.bam
+samtools index ${i%_UNSORTED.bam}.bam
+done
+
+[kcrid001@coreV1-22-016 QCFastqs]$ sbatch bamandsort.sh
+Submitted batch job 9275211
+[kcrid001@coreV1-22-016 QCFastqs]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9275071      main    Blast kcrid001  R      16:38      1 coreV3-23-027 
+           9275062      main  Cleanup kcrid001  R      21:08      1 coreV1-22-016 
+           9275008      main       sh kcrid001  R      43:38      1 coreV1-22-016 
+           9275211      main KCridBam kcrid001  R       0:08      1 coreV2-22-007 
 
 ```
