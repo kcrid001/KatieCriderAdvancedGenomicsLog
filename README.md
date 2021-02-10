@@ -1046,3 +1046,92 @@ Submitted batch job 9275211
            9275211      main KCridBam kcrid001  R       0:08      1 coreV2-22-007 
 
 ```
+
+## Day07 HW
+```sh
+#day07HW
+
+#1- Run the following command on your sprot output file to process into the contig length/match format that trinity examines
+
+[kcrid001@turing1 testassembly]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/testassembly
+[kcrid001@turing1 testassembly]$ ls
+Blast.sh  Blast.txt  blastx.outfmt6  Trinity.fasta
+[kcrid001@turing1 testassembly]$ nano blastparsing.sh
+[kcrid001@turing1 testassembly]$ cat blastparsing.sh 
+#!/bin/bash -l
+
+#SBATCH -o KCridBlastParse.TXT
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridBlastParse
+
+/cm/shared/apps/trinity/2.0.6/util/analyze_blastPlus_topHit_coverage.pl blastx.outfmt6 Trinity.fasta /cm/shared/apps/blast/databases/uniprot_sprot_Sep2018.fasta
+[kcrid001@turing1 testassembly]$ salloc
+salloc: Pending job allocation 9276475
+salloc: job 9276475 queued and waiting for resources
+salloc: job 9276475 has been allocated resources
+salloc: Granted job allocation 9276475
+[kcrid001@coreV3-23-040 testassembly]$ sbatch blastparsing.sh 
+Submitted batch job 9276476
+[kcrid001@coreV3-23-040 testassembly]$ ls
+blastparsing.sh  blastx.outfmt6            blastx.outfmt6.w_pct_hit_length
+Blast.sh         blastx.outfmt6.hist       KCridBlastParse.TXT
+Blast.txt        blastx.outfmt6.hist.list  Trinity.fasta
+[kcrid001@coreV3-23-040 testassembly]$ cat blastx.outfmt6.hist
+#hit_pct_cov_bin	count_in_bin	>bin_below
+100	212	212
+90	98	310
+80	104	414
+70	137	551
+60	182	733
+50	256	989
+40	413	1402
+30	719	2121
+20	1440	3561
+10	984	4545
+
+#2- Rm UNSORTED.bam from your QCFastqs directory (or wherever your .bams and .sams are)
+
+[kcrid001@turing1 QCFastqs]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/fastq/QCFastqs
+[kcrid001@coreV3-23-040 QCFastqs]$ nano KCridrmunsortbam.sh
+[kcrid001@coreV3-23-040 QCFastqs]$ cat KCridrmunsortbam.sh
+
+#!/bin/bash -l
+
+#SBATCH -o KCridrmunsortbam.txt
+#SBATCH -n 1         
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridrmunsortbam
+
+rm *UNSORTED.bam
+
+[kcrid001@coreV3-23-040 QCFastqs]$ sbatch KCridrmunsortbam.sh 
+Submitted batch job 9276495
+
+
+#3- Run the following to start genotyping your SNPs for filtering next class
+
+[kcrid001@coreV3-23-040 QCFastqs]$ nano KCridfreebayessubref.sh
+[kcrid001@coreV3-23-040 QCFastqs]$ cat KCridfreebayessubref.sh
+#!/bin/bash -l
+
+#SBATCH -o KCridfreebayessubref.txt
+#SBATCH -n 1         
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=KCridfreebayessubref
+
+enable_lmod
+module load dDocent
+freebayes --genotype-qualities -f /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/refassembly/15079_Apoc_hostsym.fasta *.bam > KCridEmergedfastqs.vcf
+[kcrid001@coreV3-23-040 QCFastqs]$ sbatch KCridfreebayessubref.sh 
+Submitted batch job 9276573
+[kcrid001@coreV3-23-040 QCFastqs]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9276475      main       sh kcrid001  R    1:42:22      1 coreV3-23-040 
+           9276573      main KCridfre kcrid001  R       1:22      1 coreV3-23-046 
+```
