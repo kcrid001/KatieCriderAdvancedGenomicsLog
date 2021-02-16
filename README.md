@@ -1135,3 +1135,305 @@ Submitted batch job 9276573
            9276475      main       sh kcrid001  R    1:42:22      1 coreV3-23-040 
            9276573      main KCridfre kcrid001  R       1:22      1 coreV3-23-046 
 ```
+## Day08 HW
+```sh
+#day08HW
+
+#1- Clean up your data directory by:
+	-Making a SAMS folder and mv all your .sam files into that directory
+	-Make a BAMS folder and mv all your .bam files and .bam.bai files into that directory
+	-rm your _unfiltered.vcf files if you have any
+	-rm your .fastq files
+	-Make a VCF folder in your data directory and mv your YOURNAMEmergedfastqs.vcf into this directory (if your freebayes job didn't complete then skip this step)
+
+#2- Start an interactive session via salloc
+
+[kcrid001@turing1 QCFastqs]$ cd ../../
+[kcrid001@turing1 data]$ mkdir SAMS
+[kcrid001@turing1 QCFastqs]$ mv *.sam ../../SAMS/
+[kcrid001@turing1 QCFastqs]$ salloc
+salloc: Pending job allocation 9278244
+salloc: job 9278244 queued and waiting for resources
+salloc: job 9278244 has been allocated resources
+salloc: Granted job allocation 9278244
+[kcrid001@coreV3-23-040 QCFastqs]$ mkdir ../../BAMS
+[kcrid001@coreV3-23-040 QCFastqs]$ mv *.bam *.bam.bai ../../BAMS/
+
+
+#3- cp the /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/VCF/mergedfastq_HEAAstrangiaAssembly.vcf to your VCF folder
+
+[kcrid001@coreV3-23-040 QCFastqs]$ mkdir ../../VCF
+[kcrid001@coreV3-23-040 QCFastqs]$ cd ../../VCF
+[kcrid001@coreV3-23-040 VCF]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF
+[kcrid001@coreV3-23-040 VCF]$ cp /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/VCF/mergedfastq_HEAAstrangiaAssembly.vcf ./
+
+
+#4- Determine the number of individuals and variant sites in the class vcf file (and yours if it worked) using:
+/cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf mergedfastq_HEAAstrangiaAssembly.vcf
+[kcrid001@coreV3-23-040 VCF]$ enable_lmod
+[kcrid001@coreV3-23-040 VCF]$ module load dDocent
+[kcrid001@coreV3-23-040 VCF]$ vcftools
+
+VCFtools (0.1.14)
+© Adam Auton and Anthony Marcketta 2009
+
+Process Variant Call Format files
+
+For a list of options, please go to:
+	https://vcftools.github.io/man_latest.html
+
+Alternatively, a man page is available, type:
+	man vcftools
+
+Questions, comments, and suggestions should be emailed to:
+	vcftools-help@lists.sourceforge.net
+
+[kcrid001@coreV3-23-040 VCF]$  vcftools --vcf mergedfastq_HEAAstrangiaAssembly.vcf
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly.vcf
+
+After filtering, kept 40 out of 40 Individuals
+After filtering, kept 1214003 out of a possible 1214003 Sites
+Run Time = 14.00 seconds
+
+
+[kcrid001@coreV3-23-040 VCF]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF
+[kcrid001@coreV3-23-040 VCF]$ cp ../fastq/QCFastqs/KCridEmergedfastqs.vcf ./
+[kcrid001@coreV3-23-040 VCF]$ vcftools --vcf KCridEmergedfastqs.vcf 
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf KCridEmergedfastqs.vcf
+
+\After filtering, kept 16 out of 16 Individuals
+After filtering, kept 21896 out of a possible 21896 Sites
+Run Time = 0.00 seconds
+
+
+#5- cp the /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/VCF/GoodCoralGenelistForVCFSubsetter.txt into your directory with your .vcf files
+
+[kcrid001@coreV3-23-040 VCF]$ cp /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/VCF/GoodCoralGenelistForVCFSubsetter.txt ./
+[kcrid001@coreV3-23-040 VCF]$ ls
+GoodCoralGenelistForVCFSubsetter.txt  mergedfastq_HEAAstrangiaAssembly.vcf
+KCridEmergedfastqs.vcf                out.log
+
+
+#6- Run our host vcf extractor on your merged vcf file using the following syntax:
+
+/cm/shared/courses/dbarshis/21AdvGenomics/scripts/21Sp_vcfsubsetter_advbioinf.py GoodCoralGenelistForVCFSubsetter.txt mergedfastq_HEAAstrangiaAssembly.vcf
+
+
+[kcrid001@coreV3-23-040 VCF]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF
+[kcrid001@coreV3-23-040 VCF]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/21Sp_vcfsubsetter_advbioinf.py GoodCoralGenelistForVCFSubsetter.txt mergedfastq_HEAAstrangiaAssembly.vcf
+Read in ContigList
+^CTraceback (most recent call last):
+  File "/cm/shared/courses/dbarshis/21AdvGenomics/scripts/21Sp_vcfsubsetter_advbioinf.py", line 38, in <module>
+    if Contig in ContigsToKeep.keys(): #is our contig one we want to keep
+KeyboardInterrupt
+[kcrid001@turing1 VCF]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/vcfsubsetter_advbioinf.py GoodCoralGenelistForVCFSubsetter.txt mergedfastq_HEAAstrangiaAssembly.vcf
+[kcrid001@turing1 VCF]$ ls
+GoodCoralGenelistForVCFSubsetter.txt
+KCridEmergedfastqs.vcf
+mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf
+mergedfastq_HEAAstrangiaAssembly_subset.vcf
+mergedfastq_HEAAstrangiaAssembly.vcf
+out.log
+
+
+#7- Compare the number of variant sites in your three files (YOURNAMEmergedfastqs.vcf,  mergedfastq_HEAAstrangiaAssembly.vcf, and  mergedfastq_HEAAstrangiaAssembly_subset.vcf) using:
+/cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf
+
+
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+
+After filtering, kept 40 out of 40 Individuals
+After filtering, kept 383467 out of a possible 383467 Sites
+Run Time = 6.00 seconds
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf mergedfastq_HEAAstrangiaAssembly.vcf
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly.vcf
+
+After filtering, kept 40 out of 40 Individuals
+After filtering, kept 1214003 out of a possible 1214003 Sites
+Run Time = 15.00 seconds
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf KCridEmergedfastqs.vcf
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf KCridEmergedfastqs.vcf
+
+After filtering, kept 16 out of 16 Individuals
+After filtering, kept 21896 out of a possible 21896 Sites
+Run Time = 0.00 seconds
+
+
+
+#8- Work through the VCF filtering tutorial until the following step:
+#http://www.ddocent.com/filtering/
+#Now that we have a list of individuals to remove, we can feed that directly into VCFtools for filtering.
+
+#vcftools --vcf raw.g5mac3dp3.recode.vcf --remove lowDP.indv --recode --recode-INFO-all --out raw.g5mac3dplm
+
+
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf --max-missing 0.5 --minQ 30 --recode --recode-INFO-all --out raw.g5mac3
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+	--recode-INFO-all
+	--minQ 30
+	--max-missing 0.5
+	--out raw.g5mac3
+	--recode
+
+After filtering, kept 40 out of 40 Individuals
+Outputting VCF file...
+After filtering, kept 133004 out of a possible 383467 Sites
+Run Time = 25.00 seconds
+
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf raw.g5mac3.recode.vcf --minDP 3 --recode --recode-INFO-all --out raw.g5mac3dp3
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf raw.g5mac3.recode.vcf
+	--recode-INFO-all
+	--minDP 3
+	--out raw.g5mac3dp3
+	--recode
+
+After filtering, kept 40 out of 40 Individuals
+Outputting VCF file...
+After filtering, kept 133004 out of a possible 133004 Sites
+Run Time = 26.00 seconds
+
+[kcrid001@coreV3-23-002 VCF]$ vcftools --vcf raw.g5mac3dp3.recode.vcf --missing-indv
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf raw.g5mac3dp3.recode.vcf
+	--missing-indv
+
+After filtering, kept 40 out of 40 Individuals
+Outputting Individual Missingness
+After filtering, kept 133004 out of a possible 133004 Sites
+Run Time = 2.00 seconds
+
+[kcrid001@coreV3-23-002 VCF]$ cat out.imiss
+INDV	N_DATA	N_GENOTYPES_FILTERED	N_MISS	F_MISS
+RI_W_06_merged	133004	0	86665	0.651597
+RI_W_07_merged	133004	0	82904	0.62332
+VA_B_03_merged	133004	0	72661	0.546307
+RI_W_02_merged	133004	0	94767	0.712512
+RI_W_04_merged	133004	0	92258	0.693648
+VA_W_09_SNP_clipped	133004	0	24563	0.184679
+RI_B_08_SNP_clipped	133004	0	116118	0.873041
+VA_W_08_SNP_clipped	133004	0	109256	0.821449
+VA_B_08_SNP_clipped	133004	0	124485	0.935949
+VA_W_02_merged	133004	0	92331	0.694197
+VA_B_07_merged	133004	0	80522	0.60541
+RI_B_05_merged	133004	0	55934	0.420544
+VA_W_06_merged	133004	0	84347	0.634169
+VA_W_04_merged	133004	0	64460	0.484647
+VA_W_01_merged	133004	0	86924	0.653544
+VA_B_10_SNP_clipped	133004	0	107967	0.811758
+VA_B_06_merged	133004	0	73841	0.555179
+VA_W_05_merged	133004	0	85184	0.640462
+RI_B_09_SNP_clipped	133004	0	111872	0.841118
+VA_W_10_SNP_clipped	133004	0	108814	0.818126
+RI_W_08_SNP_clipped	133004	0	101731	0.764872
+RI_B_06_merged	133004	0	103948	0.78154
+RI_W_10_SNP_clipped	133004	0	120375	0.905048
+RI_B_04_merged	133004	0	59639	0.4484
+VA_W_03_merged	133004	0	82018	0.616658
+RI_B_07_merged	133004	0	91804	0.690235
+RI_W_05_merged	133004	0	73522	0.55278
+RI_W_09_SNP_clipped	133004	0	116492	0.875853
+VA_B_01_merged	133004	0	59653	0.448505
+VA_B_09_SNP_clipped	133004	0	103404	0.77745
+RI_B_10_SNP_clipped	133004	0	108283	0.814133
+RI_W_01_merged	133004	0	95024	0.714445
+RI_B_01_merged	133004	0	89764	0.674897
+VA_B_04_merged	133004	0	74178	0.557713
+RI_B_02_merged	133004	0	114857	0.86356
+RI_W_03_merged	133004	0	49393	0.371365
+VA_B_02_merged	133004	0	102051	0.767278
+VA_W_07_merged	133004	0	83818	0.630192
+VA_B_05_merged	133004	0	69075	0.519345
+RI_B_03_merged	133004	0	104979	0.789292
+
+
+[kcrid001@coreV3-23-002 VCF]$ bash
+kcrid001@coreV3-23-002:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF$ mawk '!/IN/' out.imiss | cut -f5 > totalmissing
+kcrid001@coreV3-23-002:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF$ 
+kcrid001@coreV3-23-002:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF$ gnuplot << \EOF 
+> set terminal dumb size 120, 30
+> set autoscale 
+> unset label
+> set title "Histogram of % missing data per individual"
+> set ylabel "Number of Occurrences"
+> set xlabel "% of missing data"
+> #set yr [0:100000]
+> binwidth=0.01
+> bin(x,width)=width*floor(x/width) + binwidth/2.0
+> plot 'totalmissing' using (bin($1,binwidth)):(1.0) smooth freq with boxes
+> pause -1
+> EOF
+
+                                         Histogram of % missing data per individual
+  Number of Occurrences
+      3 ++----------+-----------+-----------+-----------+------****--+---------***-----------***---------+----------++
+        +           +           +           +           +      *'totalmissing' using (bin($1,binwidth)):(1.0) ****** +
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+    2.5 ++                                                     *  *            * *           * *                    ++
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+        |                                                      *  *            * *           * *                     |
+      2 ++                                       ****          *  *     ** **  * ************* *     ****           ++
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+    1.5 ++                                       *  *          *  *     ** **  * *    *  **  * *     *  *           ++
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        |                                        *  *          *  *     ** **  * *    *  **  * *     *  *            |
+        +           +           +           +    *  *   +      *  *  +  ** **  * *    *  **  * *     *  *+           +
+      1 ********************************************************************************************************----++
+       0.1         0.2         0.3         0.4         0.5          0.6         0.7         0.8         0.9          1
+                                                      % of missing data
+
+```
