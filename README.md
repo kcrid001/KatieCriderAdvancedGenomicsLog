@@ -1777,3 +1777,66 @@ table.value(a.tab, col.labels = 1:2)
 compoplot(a.clust)
 
 ```
+## Day10 HW
+```sh
+#1- Work through the adegenet_PCAs.R script and follow through the steps to produce some of the figures.
+
+setwd("/Users/katiecrider/Desktop/Genomics/21sp_advgenomics/assignments_exercises/day09")
+datafile<-read.genepop('coral_279_cloneremoved_neutral.filtered1SNPper_genepop.gen', ncode=2)
+#follow the same scripts as day09 #5, with the other genepop files
+
+###run step 2 as an sbatch .sh script because it will take a while to finish
+#2- cd into your SAMS folder containing your .sams and run the following as an sbatch script on your sam files to generate read mapping counts from each individual file:
+/cm/shared/courses/dbarshis/21AdvGenomics/scripts/countxpression_SB_advbioinf.py *.sam
+
+[kcrid001@turing1 SAMS]$ salloc
+salloc: Pending job allocation 9280850
+salloc: job 9280850 queued and waiting for resources
+salloc: job 9280850 has been allocated resources
+salloc: Granted job allocation 9280850
+[kcrid001@coreV2-25-015 SAMS]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/SAMS
+[kcrid001@coreV2-25-015 SAMS]$ nano SAMSreadmap.sh
+[kcrid001@coreV2-25-015 SAMS]$ cat SAMSreadmap.sh 
+#!/bin/bash -l
+
+#SBATCH -o SAMSreadmap.txt
+#SBATCH -n 1
+#SBATCH --mail-user=kcrid001@odu.edu
+#SBATCH --mail-type=END
+#SBATCH --job-name=SAMSreadmap
+
+
+/cm/shared/courses/dbarshis/21AdvGenomics/scripts/countxpression_SB_advbioinf.py *.sam
+[kcrid001@coreV2-25-015 SAMS]$ sbatch SAMSreadmap.sh 
+Submitted batch job 9280858
+[kcrid001@coreV2-25-015 SAMS]$ squeue -u kcrid001
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON) 
+           9280858      main SAMSread kcrid001  R       0:07      1 coreV1-22-016 
+           9280850      main       sh kcrid001  R    1:08:38      1 coreV2-25-015 
+
+
+#3- Once your job from step 1 is finished, start an salloc session and run the following on your outputted _counts.txt files:
+
+/cm/shared/courses/dbarshis/21AdvGenomics/scripts/ParseExpression2BigTable_advbioinf.py /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/host_genelist.txt KCridFullCounts_summed.txt NoMatch *_counts.txt
+
+
+[kcrid001@coreV2-25-015 SAMS]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/ParseExpression2BigTable_advbioinf.py /cm/shared/courses/dbarshis/21AdvGenomics/classdata/Astrangia_poculata/host_genelist.txt KCridFullCounts_summed.txt NoMatch *_counts.txt
+Hits not matchedRI_B_04_14_clippedtrimmed.fastq_counts.txt=1698	RI_B_04_18_clippedtrimmed.fastq_counts.txt=1698	RI_B_04_22_clippedtrimmed.fastq_counts.txt=1698	RI_B_05_14_clippedtrimmed.fastq_counts.txt=1698	RI_W_04_14_clippedtrimmed.fastq_counts.txt=1698	RI_W_04_18_clippedtrimmed.fastq_counts.txt=1698	RI_W_04_22_clippedtrimmed.fastq_counts.txt=1698	RI_W_05_14_clippedtrimmed.fastq_counts.txt=1698	VA_B_04_14_clippedtrimmed.fastq_counts.txt=1698	VA_B_04_18_clippedtrimmed.fastq_counts.txt=1698	VA_B_04_22_clippedtrimmed.fastq_counts.txt=1698	VA_B_05_14_clippedtrimmed.fastq_counts.txt=1698	VA_W_04_14_clippedtrimmed.fastq_counts.txt=1698	VA_W_04_18_clippedtrimmed.fastq_counts.txt=1698	VA_W_04_22_clippedtrimmed.fastq_counts.txt=1698	VA_W_05_14_clippedtrimmed.fastq_counts.txt=1698
+
+#4- scp YOURNAMEFullCounts_summed.txt to your laptop
+
+(base) Katies-MacBook-Air-4:day10 katiecrider$ scp kcrid001@turing.hpc.odu.edu:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/SAMS/KCridFullCounts_summed.txt ./
+kcrid001@turing.hpc.odu.edu's password: 
+KCridFullCounts_summed.txt                              100%  885KB   5.4MB/s   00:00    
+(base) Katies-MacBook-Air-4:day10 katiecrider$ ls
+KCridFullCounts_summed.txt
+coral_279_cloneremoved_neutral.filtered1SNPper_genepop.gen
+coral_66_cloneremoved_highoutliers.filtered1SNPper_genepop.gen
+homework_day10.txt
+(base) Katies-MacBook-Air-4:day10 katiecrider$ pwd
+/Users/katiecrider/Desktop/Genomics/21sp_advgenomics/assignments_exercises/day10
+
+#5- edit the first line of YOURNAMEFullCounts_summed.txt to remove the _counts.txt_UniqueTotReads from each sample name to just retain the actual informative part of the sample name (e.g., RI_W_06_18)
+
+```
