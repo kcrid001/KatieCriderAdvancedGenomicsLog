@@ -1437,3 +1437,343 @@ kcrid001@coreV3-23-002:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katie
                                                       % of missing data
 
 ```
+## Day09 HW
+```sh
+#day09HW - VCF to Genepop to PCAs
+
+
+#1-  Run one of the following sets of prescribed filters on your mergedfastq_HEAAstrangiaAssembly_subset.vcf, note these are fairly conservative filters
+
+##Half the class run the following
+/cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf --maf 0.015 --max-alleles 2 --max-missing 0.5 --minQ 30 --minGQ 20 --minDP 3 --remove-indels --hwe 0.01 --recode --recode-INFO-all --out 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters
+
+##the other half run the filters we used from the paper
+/cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf --max-missing 0.5 --mac 3 --minQ 30 --minDP 10 --max-alleles 2 --maf 0.015 --remove-indels --recode --recode-INFO-all --out 1578_mergedfastq_HEAAstrangiaAssembly_subset_HEAFilters
+
+
+[kcrid001@turing1 data]$ salloc
+salloc: Pending job allocation 9280290
+salloc: job 9280290 queued and waiting for resources
+salloc: job 9280290 has been allocated resources
+salloc: Granted job allocation 9280290
+[kcrid001@coreV3-23-004 data]$ cd VCF/
+[kcrid001@coreV3-23-004 VCF]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF
+[kcrid001@coreV3-23-004 VCF]$ ls
+GoodCoralGenelistForVCFSubsetter.txt             out.log
+KCridEmergedfastqs.vcf                           raw.g5mac3dp3.log
+mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf  raw.g5mac3dp3.recode.vcf
+mergedfastq_HEAAstrangiaAssembly_subset.vcf      raw.g5mac3.log
+mergedfastq_HEAAstrangiaAssembly.vcf             raw.g5mac3.recode.vcf
+out.imiss                                        totalmissing
+[kcrid001@coreV3-23-004 VCF]$ enable_lmod
+[kcrid001@coreV3-23-004 VCF]$ module load dDocent
+[kcrid001@coreV3-23-004 VCF]$ vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+
+After filtering, kept 40 out of 40 Individuals
+After filtering, kept 383467 out of a possible 383467 Sites
+Run Time = 6.00 seconds
+[kcrid001@coreV3-23-004 VCF]$ /cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf --maf 0.015 --max-alleles 2 --max-missing 0.5 --minQ 30 --minGQ 20 --minDP 3 --remove-indels --hwe 0.01 --recode --recode-INFO-all --out 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters
+
+VCFtools - v0.1.12b
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly_subset.vcf
+	--recode-INFO-all
+	--maf 0.015
+	--max-alleles 2
+	--minDP 3
+	--minGQ 20
+	--hwe 0.01
+	--minQ 30
+	--max-missing 0.5
+	--out 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters
+	--recode
+	--remove-indels
+
+After filtering, kept 40 out of 40 Individuals
+Outputting VCF file...
+After filtering, kept 16843 out of a possible 383467 Sites
+Run Time = 11.00 seconds
+## these numbers look wrong, so I used the other subset vcf file that was in my directory
+
+[kcrid001@coreV3-23-004 VCF]$ ls
+18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.log
+18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode.vcf
+GoodCoralGenelistForVCFSubsetter.txt
+KCridEmergedfastqs.vcf
+mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf
+mergedfastq_HEAAstrangiaAssembly_subset.vcf
+mergedfastq_HEAAstrangiaAssembly.vcf
+out.imiss
+out.log
+raw.g5mac3dp3.log
+raw.g5mac3dp3.recode.vcf
+raw.g5mac3.log
+raw.g5mac3.recode.vcf
+totalmissing
+[kcrid001@coreV3-23-004 VCF]$ /cm/shared/apps/vcftools/0.1.12b/bin/vcftools --vcf mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf --maf 0.015 --max-alleles 2 --max-missing 0.5 --minQ 30 --minGQ 20 --minDP 3 --remove-indels --hwe 0.01 --recode --recode-INFO-all --out 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters
+
+VCFtools - v0.1.12b
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf
+	--recode-INFO-all
+	--maf 0.015
+	--max-alleles 2
+	--minDP 3
+	--minGQ 20
+	--hwe 0.01
+	--minQ 30
+	--max-missing 0.5
+	--out 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters
+	--recode
+	--remove-indels
+
+After filtering, kept 40 out of 40 Individuals
+Outputting VCF file...
+After filtering, kept 18718 out of a possible 432676 Sites
+Run Time = 14.00 seconds
+
+[kcrid001@coreV3-23-004 VCF]$ vcftools --vcf 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode.vcf --missing-indv
+
+VCFtools - 0.1.14
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode.vcf
+	--missing-indv
+
+After filtering, kept 40 out of 40 Individuals
+Outputting Individual Missingness
+After filtering, kept 18718 out of a possible 18718 Sites
+Run Time = 1.00 seconds
+[kcrid001@coreV3-23-004 VCF]$ ls
+18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.log
+18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode.vcf
+GoodCoralGenelistForVCFSubsetter.txt
+KCridEmergedfastqs.vcf
+mergedfastq_HEAAstrangiaAssembly_subset18sp.vcf
+mergedfastq_HEAAstrangiaAssembly_subset.vcf
+mergedfastq_HEAAstrangiaAssembly.vcf
+out.imiss
+out.log
+raw.g5mac3dp3.log
+raw.g5mac3dp3.recode.vcf
+raw.g5mac3.log
+raw.g5mac3.recode.vcf
+totalmissing
+[kcrid001@coreV3-23-004 VCF]$ cat out.imiss
+INDV	N_DATA	N_GENOTYPES_FILTERED	N_MISS	F_MISS
+RI_W_06_merged	18718	0	5674	0.303131
+RI_W_07_merged	18718	0	4701	0.251149
+VA_B_03_merged	18718	0	3474	0.185597
+RI_W_02_merged	18718	0	7137	0.381291
+RI_W_04_merged	18718	0	7811	0.417299
+VA_W_09_SNP_clipped	18718	0	786	0.0419917
+RI_B_08_SNP_clipped	18718	0	14130	0.754888
+VA_W_08_SNP_clipped	18718	0	11806	0.63073
+VA_B_08_SNP_clipped	18718	0	16264	0.868896
+VA_W_02_merged	18718	0	7067	0.377551
+VA_B_07_merged	18718	0	4916	0.262635
+RI_B_05_merged	18718	0	2439	0.130302
+VA_W_06_merged	18718	0	4639	0.247836
+VA_W_04_merged	18718	0	3015	0.161075
+VA_W_01_merged	18718	0	5970	0.318944
+VA_B_10_SNP_clipped	18718	0	10773	0.575542
+VA_B_06_merged	18718	0	3608	0.192756
+VA_W_05_merged	18718	0	5904	0.315418
+RI_B_09_SNP_clipped	18718	0	12981	0.693504
+VA_W_10_SNP_clipped	18718	0	10890	0.581793
+RI_W_08_SNP_clipped	18718	0	9193	0.491132
+RI_B_06_merged	18718	0	8881	0.474463
+RI_W_10_SNP_clipped	18718	0	14714	0.786088
+RI_B_04_merged	18718	0	2421	0.129341
+VA_W_03_merged	18718	0	4740	0.253232
+RI_B_07_merged	18718	0	6586	0.351854
+RI_W_05_merged	18718	0	3762	0.200983
+RI_W_09_SNP_clipped	18718	0	13901	0.742654
+VA_B_01_merged	18718	0	3472	0.18549
+VA_B_09_SNP_clipped	18718	0	9209	0.491986
+RI_B_10_SNP_clipped	18718	0	11091	0.592531
+RI_W_01_merged	18718	0	7875	0.420718
+RI_B_01_merged	18718	0	6067	0.324127
+VA_B_04_merged	18718	0	4853	0.259269
+RI_B_02_merged	18718	0	13042	0.696762
+RI_W_03_merged	18718	0	1968	0.105139
+VA_B_02_merged	18718	0	10252	0.547708
+VA_W_07_merged	18718	0	4860	0.259643
+VA_B_05_merged	18718	0	3311	0.176889
+RI_B_03_merged	18718	0	9817	0.524468
+
+#2- Make a population file containing two columns with no header, tab delimited text the first column should be the individual name and the second column the population to which that individual belongs
+
+[kcrid001@coreV3-23-004 VCF]$ grep '#CHROM' mergedfastq_HEAAstrangiaAssembly.vcf
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	RI_W_06_merged	RI_W_07_merged	VA_B_03_merged	RI_W_02_merged	RI_W_04_merged	VA_W_09_SNP_clipped	RI_B_08_SNP_clipped	VA_W_08_SNP_clipped	VA_B_08_SNP_clipped	VA_W_02_merged	VA_B_07_merged	RI_B_05_merged	VA_W_06_merged	VA_W_04_merged	VA_W_01_merged	VA_B_10_SNP_clipped	VA_B_06_mergedVA_W_05_merged	RI_B_09_SNP_clipped	VA_W_10_SNP_clipped	RI_W_08_SNP_clipped	RI_B_06_merged	RI_W_10_SNP_clipped	RI_B_04_merged	VA_W_03_merged	RI_B_07_merged	RI_W_05_mergedRI_W_09_SNP_clipped	VA_B_01_merged	VA_B_09_SNP_clipped	RI_B_10_SNP_clipped	RI_W_01_merged	RI_B_01_merged	VA_B_04_merged	RI_B_02_merged	RI_W_03_merged	VA_B_02_merged	VA_W_07_merged	VA_B_05_merged	RI_B_03_merged
+[kcrid001@coreV3-23-004 VCF]$ grep '#CHROM' mergedfastq_HEAAstrangiaAssembly.vcf > samplenames.txt
+[kcrid001@coreV3-23-004 VCF]$ cat samplenames.txt 
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	RI_W_06_merged	RI_W_07_merged	VA_B_03_merged	RI_W_02_merged	RI_W_04_merged	VA_W_09_SNP_clipped	RI_B_08_SNP_clipped	VA_W_08_SNP_clipped	VA_B_08_SNP_clipped	VA_W_02_merged	VA_B_07_merged	RI_B_05_merged	VA_W_06_merged	VA_W_04_merged	VA_W_01_merged	VA_B_10_SNP_clipped	VA_B_06_mergedVA_W_05_merged	RI_B_09_SNP_clipped	VA_W_10_SNP_clipped	RI_W_08_SNP_clipped	RI_B_06_merged	RI_W_10_SNP_clipped	RI_B_04_merged	VA_W_03_merged	RI_B_07_merged	RI_W_05_mergedRI_W_09_SNP_clipped	VA_B_01_merged	VA_B_09_SNP_clipped	RI_B_10_SNP_clipped	RI_W_01_merged	RI_B_01_merged	VA_B_04_merged	RI_B_02_merged	RI_W_03_merged	VA_B_02_merged	VA_W_07_merged	VA_B_05_merged	RI_B_03_merged
+[kcrid001@coreV3-23-004 VCF]$ cut -f 1 out.imiss
+INDV
+RI_W_06_merged
+RI_W_07_merged
+VA_B_03_merged
+RI_W_02_merged
+RI_W_04_merged
+VA_W_09_SNP_clipped
+RI_B_08_SNP_clipped
+VA_W_08_SNP_clipped
+VA_B_08_SNP_clipped
+VA_W_02_merged
+VA_B_07_merged
+RI_B_05_merged
+VA_W_06_merged
+VA_W_04_merged
+VA_W_01_merged
+VA_B_10_SNP_clipped
+VA_B_06_merged
+VA_W_05_merged
+RI_B_09_SNP_clipped
+VA_W_10_SNP_clipped
+RI_W_08_SNP_clipped
+RI_B_06_merged
+RI_W_10_SNP_clipped
+RI_B_04_merged
+VA_W_03_merged
+RI_B_07_merged
+RI_W_05_merged
+RI_W_09_SNP_clipped
+VA_B_01_merged
+VA_B_09_SNP_clipped
+RI_B_10_SNP_clipped
+RI_W_01_merged
+RI_B_01_merged
+VA_B_04_merged
+RI_B_02_merged
+RI_W_03_merged
+VA_B_02_merged
+VA_W_07_merged
+VA_B_05_merged
+RI_B_03_merged
+
+# paste in excel and use the 'left' command to get the first 4 characters of each name. copy and paste to the cluster
+
+[kcrid001@coreV3-23-004 VCF]$ nano popfile.txt
+[kcrid001@coreV3-23-004 VCF]$ cat popfile.txt 
+RI_W_06_merged	RI_W
+RI_W_07_merged	RI_W
+VA_B_03_merged	VA_B
+RI_W_02_merged	RI_W
+RI_W_04_merged	RI_W
+VA_W_09_SNP_clipped	VA_W
+RI_B_08_SNP_clipped	RI_B
+VA_W_08_SNP_clipped	VA_W
+VA_B_08_SNP_clipped	VA_B
+VA_W_02_merged	VA_W
+VA_B_07_merged	VA_B
+RI_B_05_merged	RI_B
+VA_W_06_merged	VA_W
+VA_W_04_merged	VA_W
+VA_W_01_merged	VA_W
+VA_B_10_SNP_clipped	VA_B
+VA_B_06_merged	VA_B
+VA_W_05_merged	VA_W
+RI_B_09_SNP_clipped	RI_B
+VA_W_10_SNP_clipped	VA_W
+RI_W_08_SNP_clipped	RI_W
+RI_B_06_merged	RI_B
+RI_W_10_SNP_clipped	RI_W
+RI_B_04_merged	RI_B
+VA_W_03_merged	VA_W
+RI_B_07_merged	RI_B
+RI_W_05_merged	RI_W
+RI_W_09_SNP_clipped	RI_W
+VA_B_01_merged	VA_B
+VA_B_09_SNP_clipped	VA_B
+RI_B_10_SNP_clipped	RI_B
+RI_W_01_merged	RI_W
+RI_B_01_merged	RI_B
+VA_B_04_merged	VA_B
+RI_B_02_merged	RI_B
+RI_W_03_merged	RI_W
+VA_B_02_merged	VA_B
+VA_W_07_merged	VA_W
+VA_B_05_merged	VA_B
+RI_B_03_merged	RI_B
+
+
+#3- Convert your filtered .vcf file to genepop format using the following command:
+
+/cm/shared/courses/dbarshis/21AdvGenomics/scripts/vcftogenepop_advbioinf.py YOURFILTERED.vcf YOUR_PopFile.txt
+
+[kcrid001@coreV3-23-004 VCF]$ pwd
+/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF
+[kcrid001@coreV3-23-004 VCF]$ /cm/shared/courses/dbarshis/21AdvGenomics/scripts/vcftogenepop_advbioinf.py 18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode.vcf popfile.txt
+Indivs with genotypes in vcf file: RI_W_06_merged	RI_W_07_merged	VA_B_03_merged	RI_W_02_merged	RI_W_04_merged	VA_W_09_SNP_clipped	RI_B_08_SNP_clipped	VA_W_08_SNP_clipped	VA_B_08_SNP_clipped	VA_W_02_merged	VA_B_07_merged	RI_B_05_merged	VA_W_06_merged	VA_W_04_merged	VA_W_01_merged	VA_B_10_SNP_clipped	VA_B_06_merged	VA_W_05_merged	RI_B_09_SNP_clipped	VA_W_10_SNP_clipped	RI_W_08_SNP_clipped	RI_B_06_merged	RI_W_10_SNP_clipped	RI_B_04_merged	VA_W_03_merged	RI_B_07_merged	RI_W_05_merged	RI_W_09_SNP_clipped	VA_B_01_merged	VA_B_09_SNP_clipped	RI_B_10_SNP_clipped	RI_W_01_merged	RI_B_01_merged	VA_B_04_merged	RI_B_02_merged	RI_W_03_merged	VA_B_02_merged	VA_W_07_merged	VA_B_05_merged	RI_B_03_merged
+44 18718 18718 18718 18718 40
+
+#4- SCP your YOURFILE_allfilters.recode_subset_genepop.gen file to your laptop
+(base) Katies-MacBook-Air-4:day09 katiecrider$ pwd
+/Users/katiecrider/Desktop/Genomics/21sp_advgenomics/assignments_exercises/day09
+(base) Katies-MacBook-Air-4:day09 katiecrider$ scp kcrid001@turing.hpc.odu.edu:/cm/shared/courses/dbarshis/21AdvGenomics/sandboxes/katiecrider/data/VCF/18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode_genepop.gen ./
+
+#5- Switch to the adegenet_PCAs.R script and follow through the steps to produce some of the figures.
+
+install.packages("deldir")
+library("adegenet")
+library("ape")
+library("pegas")
+library("seqinr")
+library("ggplot2")
+library("viridis")
+library("scales")
+library("factoextra")
+
+#set working directory
+setwd("/Users/katiecrider/Desktop/Genomics/21sp_advgenomics/assignments_exercises/day09")
+
+datafile<-read.genepop('18718_mergedfastq_HEAAstrangiaAssembly_subset_ClassFilters.recode_genepop.gen', ncode=2)
+
+
+sum(is.na(datafile$tab))
+datafile #shows info
+YOURdata<-scaleGen(datafile, NA.method='mean')
+X<-YOURdata
+Y<-as.factor(substring(pop(datafile),1,4)) #change the second number here to change how many letters/numbers you keep in the name
+pca1 <- dudi.pca(X,cent=T, scale=T, scannf=F, nf=3)
+summary(pca1)
+
+
+#### PCAs ####
+# individual labels
+s.label(pca1$li)
+
+# population elipses
+s.class(pca1$li, pop(datafile))
+
+#color symbols, pop names
+#pdf("YOURINITIALS_ColorPCA1v2.pdf")
+col <- c("blue","red", "green", "black")
+s.class(pca1$li, Y,xax=1,yax=2, col=transp(col,.6), axesell=F, cstar=0, cpoint=3, grid=FALSE, addaxes=TRUE)
+add.scatter.eig(pca1$eig[1:3], 3,1,2, posi="topright")
+title("PCA of DJB_data\naxes 1-2")
+#dev.off()
+
+#### Snapclust ####
+a.clust<-snapclust(datafile, k = 4)
+class(a.clust)
+names(a.clust)
+a.tab <- table(pop(datafile), a.clust$group)
+table.value(a.tab, col.labels = 1:2)
+
+compoplot(a.clust)
+
+```
